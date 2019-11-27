@@ -1,5 +1,6 @@
 package com.rcb.financialservice.ui.activity
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -7,11 +8,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.rcb.financialservice.R
 import com.rcb.financialservice.databinding.ActivityMainBinding
+import com.rcb.financialservice.net.netretrofit.ApiClient
+import com.rcb.financialservice.net.netretrofit.body.FindFaceBody
+import com.rcb.financialservice.net.netretrofit.entity.BaseEntity
+import com.rcb.financialservice.net.netretrofit.entity.FindFaceEntity
 import com.rcb.financialservice.ui.base.BaseActivity
 import com.rcb.financialservice.ui.fragment.AssistantFragment
 import com.rcb.financialservice.ui.fragment.LifeFragment
 import com.rcb.financialservice.ui.fragment.MainFragment
 import com.rcb.financialservice.ui.fragment.MineFragment
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
 
@@ -100,4 +113,56 @@ class MainActivity : BaseActivity() {
 
 
 
+    fun retrofitTest(){
+        ApiClient.getApiService().findFace( FindFaceBody(""))
+            .subscribe(object : Observer<BaseEntity<FindFaceEntity>> {
+                override fun onNext(entity: BaseEntity<FindFaceEntity>) {
+                    if (entity.isSuccess) {
+                        val faceEntity = entity.getResult()
+
+                    } else {
+                    }
+
+                }
+
+                override fun onSubscribe(d: Disposable) {
+//                    mFindFaceDisposable = d
+                }
+
+
+                override fun onError(e: Throwable) {
+                }
+
+                override fun onComplete() {}
+            })
+    }
+
+    fun startTimer(){
+        Observable.interval(0, 1, TimeUnit.SECONDS)
+            .subscribeOn(Schedulers.single())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Long> {
+                override fun onComplete() {
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: Long) {
+
+
+                }
+
+                override fun onError(e: Throwable) {
+                }
+
+            })
+    }
+
+    fun syncDemo(){
+        Observable.create(ObservableOnSubscribe<String> {
+            it.onNext("")
+        }).subscribeOn(Schedulers.io()).subscribe { _ ->
+        }
+    }
 }
